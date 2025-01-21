@@ -1,10 +1,10 @@
 import { Container, Heading, Section, Text } from "@radix-ui/themes";
 import { db } from "@/db";
-import { articles } from "@/db/schema";
+import { contents, categories } from "@/db/schema";
 import Link from "next/link";
 
 export default async function ArticlesPage() {
-  const allArticles = await db.select().from(articles).all();
+  const allArticles = await db.select().from(contents).all();
 
   return (
     <Section className="py-8">

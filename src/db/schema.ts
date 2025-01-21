@@ -5,6 +5,7 @@ import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 export const categories = sqliteTable('categories', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   name: text('name').notNull().unique(),
+  slug: text('slug').notNull().unique().default(''),
   description: text('description'),
   sort: integer('sort').notNull().default(0),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`CURRENT_TIMESTAMP`),
@@ -15,6 +16,7 @@ export const contents = sqliteTable('contents', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   title: text('title').notNull(),
   content: text('content').notNull(),
+  slug: text('slug').notNull().unique().default(''),
   categoryId: integer('category_id').references(() => categories.id),
   sort: integer('sort').notNull().default(0),
   isPublished: integer('is_published', { mode: 'boolean' }).notNull().default(true),

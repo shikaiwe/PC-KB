@@ -1,6 +1,6 @@
 import { Container, Heading, Section, Text } from "@radix-ui/themes";
 import { db } from "@/db";
-import { articles, categories } from "@/db/schema";
+import { contents, categories } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -12,8 +12,8 @@ export default async function ArticlePage({
 }) {
   const article = await db
     .select()
-    .from(articles)
-    .where(eq(articles.slug, params.slug))
+    .from(contents)
+    .where(eq(contents.slug, params.slug))
     .get();
 
   if (!article) {
