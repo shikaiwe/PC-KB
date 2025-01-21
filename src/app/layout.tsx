@@ -1,35 +1,12 @@
-import "./globals.css";
-import '@radix-ui/themes/styles.css';
-import { Theme } from '@radix-ui/themes';
+import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import "./globals.css";
 
-const inter = Inter({
-  subsets: ["latin"],
-  display: 'swap',
-  variable: '--font-inter',
-  preload: true,
-  fallback: [
-    '-apple-system',
-    'BlinkMacSystemFont',
-    'Segoe UI',
-    'Roboto',
-    'Helvetica Neue',
-    'Arial',
-    'Noto Sans',
-    'sans-serif',
-    'Apple Color Emoji',
-    'Segoe UI Emoji',
-    'Segoe UI Symbol',
-    'Noto Color Emoji',
-  ],
-});
+const inter = Inter({ subsets: ["latin"] });
 
-export const metadata = {
-  title: "PC维修与维护知识库",
-  description: "专业的电脑维修与维护知识分享平台",
-  icons: {
-    icon: '/favicon.ico',
-  },
+export const metadata: Metadata = {
+  title: "PC维修知识库",
+  description: "专业的电脑维修技术资料库",
 };
 
 export default function RootLayout({
@@ -38,11 +15,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="zh-CN" className={inter.variable}>
-      <body className={`${inter.className} antialiased`}>
-        <Theme appearance="light" accentColor="blue" radius="medium">
-          {children}
-        </Theme>
+    <html lang="zh-CN">
+      <body className={inter.className}>
+        <div className="view-transition-fade">{children}</div>
       </body>
     </html>
   );

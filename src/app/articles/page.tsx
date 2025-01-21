@@ -1,42 +1,58 @@
-import { Container, Heading, Section, Text } from "@radix-ui/themes";
+import Link from "next/link";
 import { db } from "@/db";
 import { contents, categories } from "@/db/schema";
-import Link from "next/link";
+import { desc, eq } from "drizzle-orm";
 
 export default async function ArticlesPage() {
-  const allArticles = await db.select().from(contents).all();
+  // 获取所有已发布的文章
+  const articles = await db.select({
+    id: contents.id,
+    title: contents.title,
+    content: contents.content,
+    slug: contents.slug,
+    createdAt: contents.createdAt,
+    categoryId: contents.categoryId,
+    category: categories,
+  })
+  .from(contents)
+  .leftJoin(categories, eq(contents.categoryId, categories.id))
+  .where(eq(contents.isPublished, true))
+  .orderBy(desc(contents.createdAt));
 
   return (
-    <Section className="py-8">
-      <Container>
-        <Heading size="8" className="mb-8">
-          所有文章
-        </Heading>
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">所有文章</h1>
         
         <div className="grid gap-6">
-          {allArticles.map((article) => (
-            <article
-              key={article.id}
-              className="p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
+          {articles.map((article) => (
+            <Link 
+              key={article.id} 
+              href={`/articles/${article.slug}`}
+              className="block bg-white shadow rounded-lg hover:shadow-md transition-shadow"
             >
-              <Link href={`/articles/${article.slug}`}>
-                <Heading size="4" className="mb-2 hover:text-blue-600">
-                  {article.title}
-                </Heading>
-              </Link>
-              <Text color="gray" size="2">
-                发布于 {new Date(article.createdAt).toLocaleDateString()}
-              </Text>
-            </article>
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <h2 className="text-xl font-semibold text-gray-900 hover:text-blue-600">
+                    {article.title}
+                  </h2>
+                  {article.category && (
+                    <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                      {article.category.name}
+                    </span>
+                  )}
+                </div>
+                <p className="text-gray-600 mb-4 line-clamp-2">
+                  {article.content.substring(0, 200)}...
+                </p>
+                <div className="text-sm text-gray-500">
+                  {new Date(article.createdAt).toLocaleDateString()}
+                </div>
+              </div>
+            </Link>
           ))}
-
-          {allArticles.length === 0 && (
-            <Text className="text-center py-8 text-gray-500">
-              暂无文章
-            </Text>
-          )}
         </div>
-      </Container>
-    </Section>
+      </div>
+    </div>
   );
 } 

@@ -46,14 +46,6 @@ export default function NotFound() {
             </Link>
           </div>
         </div>
-
-        {/* 帮助链接 */}
-        <div className="mt-12 text-sm text-gray-500">
-          需要帮助？
-          <Link href="/contact" className="text-blue-600 hover:underline ml-1">
-            联系我们
-          </Link>
-        </div>
       </div>
     </div>
   );
