@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS tools (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT NOT NULL,
+  category TEXT NOT NULL,
+  download_url TEXT NOT NULL,
+  size TEXT NOT NULL,
+  version TEXT NOT NULL,
+  icon TEXT NOT NULL,
+  download_count INTEGER DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+); 

@@ -1,0 +1,231 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-rgb: 255, 255, 255;
+
+  --primary: 221.2 83.2% 53.3%;
+  --primary-foreground: 210 40% 98%;
+
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 221.2 83.2% 53.3%;
+  --radius: 0.5rem;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+}
+
+@layer components {
+  .nav-link {
+    @apply text-sm text-gray-600 hover:text-gray-900 transition-colors;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors 
+    focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-primary-foreground shadow hover:bg-primary/90;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80;
+  }
+
+  .input {
+    @apply flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm
+    transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium
+    placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1
+    focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .card {
+    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
+  }
+
+  .card-header {
+    @apply flex flex-col space-y-1.5 p-6;
+  }
+
+  .card-content {
+    @apply p-6 pt-0;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* 自定义滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* 导航栏样式 */
+.navbar {
+  @apply bg-white border-b border-gray-100;
+}
+
+.nav-container {
+  @apply max-w-7xl mx-auto px-4;
+}
+
+.nav-brand {
+  @apply text-base font-normal text-gray-900;
+}
+
+.nav-link {
+  @apply px-3 py-2 text-sm text-gray-600;
+}
+
+/* 主要内容区域 */
+.main-container {
+  @apply max-w-7xl mx-auto px-4 py-8;
+}
+
+/* Hero 区域 */
+.hero-section {
+  @apply text-center mb-8;
+}
+
+.hero-title {
+  @apply text-3xl font-medium text-gray-900 mb-2;
+}
+
+.hero-description {
+  @apply text-gray-600 text-base mb-6;
+}
+
+/* 搜索框样式 */
+.search-container {
+  @apply max-w-xl mx-auto relative mb-12;
+}
+
+.search-input {
+  @apply w-full h-10 px-4 pr-20;
+  @apply border border-gray-200 rounded;
+  @apply text-sm text-gray-900;
+  @apply placeholder:text-gray-400;
+  @apply focus:outline-none focus:border-blue-500;
+}
+
+.search-button {
+  @apply absolute right-0 top-0 h-10 px-4;
+  @apply bg-blue-500 text-white text-sm;
+  @apply rounded-r border border-blue-500;
+}
+
+/* 分类卡片样式 */
+.categories-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4;
+}
+
+.category-card {
+  @apply bg-white p-6 rounded border border-gray-100;
+}
+
+.category-card-icon {
+  @apply text-gray-500 mb-4;
+}
+
+.category-card-title {
+  @apply text-lg font-medium text-gray-900 mb-1;
+}
+
+.category-card-description {
+  @apply text-sm text-gray-500 mb-4;
+}
+
+.category-items {
+  @apply space-y-1;
+}
+
+.category-item {
+  @apply text-sm text-gray-600;
+  @apply flex items-center;
+}
+
+.category-item::before {
+  content: "•";
+  @apply mr-2 text-gray-400;
+}
+
+.view-more {
+  @apply text-sm text-blue-500 hover:text-blue-600 mt-3 inline-block;
+}
+
+/* 最新资源区域 */
+.latest-resources {
+  @apply mt-12 text-center;
+}
+
+.latest-title {
+  @apply text-xl font-medium text-gray-900 mb-1;
+}
+
+.latest-description {
+  @apply text-sm text-gray-500;
+}
+
+/* 标题样式 */
+.section-title {
+  @apply text-2xl font-bold mb-4 text-center text-gray-900;
+}
+
+.section-description {
+  @apply text-center text-gray-600 mb-8;
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out;
+}
