@@ -16,6 +16,7 @@ interface Props {
     icon?: string;
     size?: string;
     version?: string;
+    slug?: string;
   }>;
 }
 
@@ -38,7 +39,7 @@ export default function SearchResults({ query, results }: Props) {
             {result.type === 'content' ? (
               // 文章搜索结果
               <Link
-                href={`/articles/${result.id}`}
+                href={`/articles/${result.slug}`}
                 className="block bg-white shadow rounded-lg hover:shadow-lg transition-all duration-300"
               >
                 <div className="p-6">
@@ -71,6 +72,8 @@ export default function SearchResults({ query, results }: Props) {
               // 工具搜索结果
               <Link
                 href={result.downloadUrl || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="block bg-white shadow rounded-lg hover:shadow-lg transition-all duration-300"
               >
                 <div className="p-6">
@@ -101,12 +104,16 @@ export default function SearchResults({ query, results }: Props) {
                           )}
                         </div>
                       </div>
-                      <p className="text-gray-600 mb-2 line-clamp-2">
+                      <p className="text-gray-600 mb-4 line-clamp-2">
                         {result.content}
                       </p>
-                      <div className="flex items-center text-sm text-gray-500 space-x-4">
-                        {result.size && <span>{result.size}</span>}
-                        {result.version && <span>v{result.version}</span>}
+                      <div className="flex items-center space-x-4 text-sm text-gray-500">
+                        {result.version && (
+                          <span>版本：{result.version}</span>
+                        )}
+                        {result.size && (
+                          <span>大小：{result.size}</span>
+                        )}
                       </div>
                     </div>
                   </div>

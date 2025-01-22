@@ -5,6 +5,8 @@
 *.sqlite
 *.sqlite3
 *.db-journal
+*.db-shm
+*.db-wal
 
 # dependencies
 /node_modules
@@ -95,3 +97,6 @@ dist/
 *.tmp
 *.temp
 .history/
+
+# cursor
+.cursorrules

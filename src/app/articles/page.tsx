@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { db } from "@/db";
-import { contents, categories } from "@/db/schema";
+import { contents, categories, type Content, type Category } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
+
+// 截取中文字符串的函数
+function truncateText(text: string, length: number) {
+  if (text.length <= length) return text;
+  return text.slice(0, length).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]$/, '') + '...';
+}
 
 export default async function ArticlesPage() {
   // 获取所有已发布的文章
@@ -12,6 +18,8 @@ export default async function ArticlesPage() {
     slug: contents.slug,
     createdAt: contents.createdAt,
     categoryId: contents.categoryId,
+    type: contents.type,
+    sourceUrl: contents.sourceUrl,
     category: categories,
   })
   .from(contents)
@@ -20,36 +28,65 @@ export default async function ArticlesPage() {
   .orderBy(desc(contents.createdAt));
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">所有文章</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">所有文章</h1>
         
         <div className="grid gap-6">
-          {articles.map((article) => (
-            <Link 
-              key={article.id} 
-              href={`/articles/${article.slug}`}
-              className="block bg-white shadow rounded-lg hover:shadow-md transition-shadow"
-            >
+          {articles.map((article: Content & { category: Category | null }) => (
+            <div key={article.id} className="block bg-white dark:bg-gray-800 shadow rounded-lg hover:shadow-md transition-shadow">
               <div className="p-6">
                 <div className="flex items-center justify-between mb-2">
-                  <h2 className="text-xl font-semibold text-gray-900 hover:text-blue-600">
-                    {article.title}
-                  </h2>
-                  {article.category && (
-                    <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                  <div className="flex items-center space-x-2">
+                    <Link href={`/articles/${article.slug}`}>
+                      <h2 className="text-xl font-semibold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400">
+                        {article.title}
+                      </h2>
+                    </Link>
+                    {article.type === 'external' && (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300">
+                        外部文章
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    {new Date(article.createdAt).toLocaleDateString()}
+                  </div>
+                </div>
+                {article.category && (
+                  <Link href={`/categories/${article.category.slug}`}>
+                    <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300">
                       {article.category.name}
                     </span>
+                  </Link>
+                )}
+                <p className="mt-4 text-gray-600 dark:text-gray-300">
+                  {article.content ? truncateText(article.content, 200) : '暂无内容'}
+                </p>
+                <div className="mt-4">
+                  {article.type === 'external' && article.sourceUrl ? (
+                    <a
+                      href={article.sourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+                    >
+                      阅读原文
+                      <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  ) : (
+                    <Link
+                      href={`/articles/${article.slug}`}
+                      className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+                    >
+                      阅读更多 →
+                    </Link>
                   )}
                 </div>
-                <p className="text-gray-600 mb-4 line-clamp-2">
-                  {article.content.substring(0, 200)}...
-                </p>
-                <div className="text-sm text-gray-500">
-                  {new Date(article.createdAt).toLocaleDateString()}
-                </div>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       </div>

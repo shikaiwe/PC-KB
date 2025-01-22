@@ -19,25 +19,25 @@ export default async function CategoriesPage() {
     .orderBy(categories.sort);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">所有分类</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">所有分类</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {categoriesWithCount.map((category) => (
             <Link
               key={category.id}
               href={`/categories/${category.slug}`}
-              className="block bg-white shadow rounded-lg hover:shadow-md transition-shadow"
+              className="group block bg-white dark:bg-gray-800 shadow rounded-lg hover:shadow-md transition-shadow"
             >
               <div className="p-6">
-                <h2 className="text-xl font-semibold text-gray-900 hover:text-blue-600 mb-2">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 mb-2">
                   {category.name}
                 </h2>
-                <p className="text-gray-600 mb-4">
+                <p className="text-gray-600 dark:text-gray-300 mb-4">
                   {category.description}
                 </p>
-                <div className="text-sm text-gray-500">
+                <div className="text-sm text-gray-500 dark:text-gray-400">
                   {category.articleCount} 篇文章
                 </div>
               </div>
