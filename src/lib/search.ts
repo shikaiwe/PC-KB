@@ -12,7 +12,6 @@ interface SearchResult {
   slug?: string;
   createdAt?: Date;
   downloadUrl?: string;
-  icon?: string;
   size?: string;
   version?: string;
 }
@@ -35,7 +34,6 @@ interface ToolSearchResult {
   type: string;
   category: string | null;
   downloadUrl: string | null;
-  icon: string | null;
   size: string | null;
   version: string | null;
   rank: number;
@@ -75,7 +73,6 @@ const cachedSearch = unstable_cache(
             'tool' as type,
             t.category,
             t.download_url as downloadUrl,
-            t.icon,
             t.size,
             t.version,
             rank
@@ -105,7 +102,6 @@ const cachedSearch = unstable_cache(
           type: 'tool' as const,
           category: t.category || undefined,
           downloadUrl: t.downloadUrl || undefined,
-          icon: t.icon || undefined,
           size: t.size || undefined,
           version: t.version || undefined
         }))
@@ -191,7 +187,6 @@ async function fallbackSearch(query: string) {
       type: sql<'tool'>`'tool'`,
       category: tools.category,
       downloadUrl: tools.downloadUrl,
-      icon: tools.icon,
       size: tools.size,
       version: tools.version
     })
@@ -236,7 +231,6 @@ async function fallbackSearch(query: string) {
       type: 'tool' as const,
       category: t.category || undefined,
       downloadUrl: t.downloadUrl || undefined,
-      icon: t.icon || undefined,
       size: t.size || undefined,
       version: t.version || undefined
     }))

@@ -4,22 +4,42 @@ export interface Category {
   id: number;
   name: string;
   slug: string;
-  description: string;
+  description: string | null;
   sort: number;
+  createdAt: Date;
 }
 
-export interface Update {
-  type: 'article' | 'tool';
+export interface Tool {
+  id: number;
+  name: string;
+  description: string;
+  category: string;
+  downloadUrl: string;
+  size: string;
+  version: string;
+  downloadCount: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type ArticleUpdate = {
+  type: 'article';
   title: string;
   updatedAt: Date;
-  slug?: string;
-  content?: string;
-  description?: string;
-  icon: ReactNode;
-}
+  slug: string;
+};
+
+export type ToolUpdate = {
+  type: 'tool';
+  title: string;
+  updatedAt: Date;
+  description: string;
+};
+
+export type Update = ArticleUpdate | ToolUpdate;
 
 export interface HomeProps {
-  categoriesData: Category[];
+  categories: Category[];
   latestUpdates: Update[];
 }
 
@@ -28,10 +48,4 @@ export type Content = {
   updatedAt: string;
   slug: string;
   content: string;
-};
-
-export type Tool = {
-  name: string;
-  updatedAt: string;
-  description: string;
 }; 

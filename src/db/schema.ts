@@ -8,8 +8,8 @@ export const categories = sqliteTable('categories', {
   slug: text('slug').notNull().unique().default(''),
   description: text('description'),  // 分类描述
   sort: integer('sort').notNull().default(0),
-  createdAt: integer('created_at', { mode: 'timestamp' })
-    .default(sql`CURRENT_TIMESTAMP`)
+  createdAt: integer('created_at', { mode: 'timestamp_ms' })
+    .default(sql`ROUND(UNIXEPOCH() * 1000)`)
     .notNull(),
 });
 
@@ -24,11 +24,11 @@ export const contents = sqliteTable('contents', {
   isPublished: integer('is_published', { mode: 'boolean' }).notNull().default(false),  // 是否发布
   type: text('type').notNull().default('original'),
   sourceUrl: text('source_url'),
-  createdAt: integer('created_at', { mode: 'timestamp' })
-    .default(sql`CURRENT_TIMESTAMP`)
+  createdAt: integer('created_at', { mode: 'timestamp_ms' })
+    .default(sql`ROUND(UNIXEPOCH() * 1000)`)
     .notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' })
-    .default(sql`CURRENT_TIMESTAMP`)
+  updatedAt: integer('updated_at', { mode: 'timestamp_ms' })
+    .default(sql`ROUND(UNIXEPOCH() * 1000)`)
     .notNull(),
 });
 
@@ -40,12 +40,11 @@ export const tools = sqliteTable('tools', {
   downloadUrl: text('download_url'),  // 下载链接
   size: text('size'),  // 文件大小
   version: text('version'),  // 版本号
-  icon: text('icon'),  // 图标链接
   downloadCount: integer('download_count').default(0),
-  createdAt: integer('created_at', { mode: 'timestamp' })
-    .default(sql`CURRENT_TIMESTAMP`)
+  createdAt: integer('created_at', { mode: 'timestamp_ms' })
+    .default(sql`ROUND(UNIXEPOCH() * 1000)`)
     .notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' })
-    .default(sql`CURRENT_TIMESTAMP`)
+  updatedAt: integer('updated_at', { mode: 'timestamp_ms' })
+    .default(sql`ROUND(UNIXEPOCH() * 1000)`)
     .notNull(),
 }); 

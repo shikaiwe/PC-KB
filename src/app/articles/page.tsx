@@ -2,6 +2,7 @@ import Link from "next/link";
 import { db } from "@/db";
 import { contents, categories, type Content, type Category } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
+import { formatDateTime, getRelativeTimeString } from "@/lib/date";
 
 // 截取中文字符串的函数
 function truncateText(text: string, length: number) {
@@ -49,19 +50,22 @@ export default async function ArticlesPage() {
                       </span>
                     )}
                   </div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">
-                    {new Date(article.createdAt).toLocaleDateString()}
+                  <div className="flex flex-col items-end text-sm text-gray-500 dark:text-gray-400">
+                    <time title={formatDateTime(article.createdAt, 'full')}>
+                      {getRelativeTimeString(article.createdAt)}
+                    </time>
+                    <time className="text-xs">
+                      {formatDateTime(article.createdAt)}
+                    </time>
                   </div>
                 </div>
                 {article.category && (
-                  <Link href={`/categories/${article.category.slug}`}>
-                    <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300">
-                      {article.category.name}
-                    </span>
-                  </Link>
+                  <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                    分类：{article.category.name}
+                  </div>
                 )}
-                <p className="mt-4 text-gray-600 dark:text-gray-300">
-                  {article.content ? truncateText(article.content, 200) : '暂无内容'}
+                <p className="text-gray-600 dark:text-gray-300">
+                  {truncateText(article.content.replace(/^#.*$/m, '').trim(), 200)}
                 </p>
                 <div className="mt-4">
                   {article.type === 'external' && article.sourceUrl ? (

@@ -3,13 +3,33 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { Update } from "@/types/home";
+import { Clock } from 'lucide-react';
+
+type ArticleUpdate = {
+  type: 'article';
+  title: string;
+  updatedAt: Date;
+  slug: string;
+};
+
+type ToolUpdate = {
+  type: 'tool';
+  title: string;
+  updatedAt: Date;
+  description: string;
+};
+
+type Update = ArticleUpdate | ToolUpdate;
 
 interface LatestUpdatesProps {
   updates: Update[];
 }
 
 export default function LatestUpdates({ updates }: LatestUpdatesProps) {
+  if (updates.length === 0) {
+    return null;
+  }
+
   return (
     <section className="py-24 border-t border-gray-100 dark:border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,7 +53,7 @@ export default function LatestUpdates({ updates }: LatestUpdatesProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {updates.map((update, index) => (
             <motion.div
-              key={index}
+              key={`${update.type}-${index}`}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -41,24 +61,44 @@ export default function LatestUpdates({ updates }: LatestUpdatesProps) {
             >
               <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-md 
                             transform hover:-translate-y-1 transition-all duration-300">
-                <div className="flex items-center space-x-3 text-sm text-gray-500 dark:text-gray-400 mb-4">
-                  <div className="text-blue-600 dark:text-blue-400">
-                    {update.icon}
+                <div className="flex flex-col space-y-4">
+                  <div className="flex flex-col space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-lg text-sm font-medium shrink-0
+                          ${update.type === 'article' 
+                            ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' 
+                            : 'bg-green-50 text-green-600 dark:bg-green-900/30 dark:text-green-400'
+                          }`}
+                        >
+                          {update.type === 'article' ? '文章' : '工具'}
+                        </span>
+                        <time className="text-sm text-gray-500 dark:text-gray-400 shrink-0">
+                          {update.updatedAt.toLocaleDateString()}
+                        </time>
+                      </div>
+                    </div>
+                    {update.type === 'article' ? (
+                      <Link
+                        href={`/articles/${update.slug}`}
+                        className="group"
+                      >
+                        <h3 className="text-lg font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                          {update.title}
+                        </h3>
+                      </Link>
+                    ) : (
+                      <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                        {update.title}
+                      </h3>
+                    )}
                   </div>
-                  <span className="font-medium">{update.type === 'article' ? '文章' : '工具'}</span>
-                  <span>·</span>
-                  <span>{update.updatedAt.toLocaleDateString()}</span>
+                  {update.type === 'tool' && (
+                    <p className="text-gray-600 dark:text-gray-300">
+                      {update.description}
+                    </p>
+                  )}
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                  {update.title}
-                </h3>
-                {update.type === 'article' ? (
-                  <Link href={`/articles/${update.slug}`} className="text-blue-600 dark:text-blue-400 hover:underline">
-                    阅读更多
-                  </Link>
-                ) : (
-                  <p className="text-gray-600 dark:text-gray-300">{update.description}</p>
-                )}
               </div>
             </motion.div>
           ))}

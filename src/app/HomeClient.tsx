@@ -7,7 +7,7 @@ import Features from "@/components/home/Features";
 import Categories from "@/components/home/Categories";
 import LatestUpdates from "@/components/home/LatestUpdates";
 
-export default function HomeClient({ categoriesData, latestUpdates }: HomeProps) {
+export default function HomeClient({ categories, latestUpdates }: HomeProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export default function HomeClient({ categoriesData, latestUpdates }: HomeProps)
       <main className="pt-8">
         <Hero />
         <Features />
-        <Categories categories={categoriesData} />
+        <Categories categories={categories} />
         <LatestUpdates updates={latestUpdates} />
       </main>
     </div>

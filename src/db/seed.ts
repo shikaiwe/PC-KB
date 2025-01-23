@@ -1,39 +1,40 @@
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import Database from 'better-sqlite3';
 import { categories, contents, tools } from './schema';
-import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
-import fs from 'fs';
+
+const sqlite = new Database('pc-kb.db');
+const db = drizzle(sqlite);
 
 // 分类数据
 const categoriesData = [
     {
-        name: "硬件知识",
+        name: "电脑硬件知识",
         slug: "hardware",
-        description: "电脑硬件相关知识，包括CPU、显卡、主板等",
+        description: "了解CPU、内存、硬盘等硬件知识",
         sort: 1
     },
     {
         name: "装机指南",
-        slug: "build-guide",
-        description: "从零开始的电脑组装教程和注意事项",
+        slug: "build",
+        description: "从零开始学习组装电脑",
         sort: 2
     },
     {
-        name: "故障排除",
-        slug: "troubleshooting",
-        description: "常见电脑问题的诊断和解决方案",
+        name: "故障排查",
+        slug: "troubleshoot",
+        description: "常见电脑问题解决方案",
         sort: 3
     },
     {
         name: "性能优化",
-        slug: "optimization",
-        description: "系统性能优化和超频指南",
+        slug: "optimize",
+        description: "提升电脑性能的各种技巧",
         sort: 4
     },
     {
-        name: "选购指南",
-        slug: "buying-guide",
-        description: "电脑配件选购建议和推荐",
+        name: "选购建议",
+        slug: "purchase",
+        description: "如何选购适合自己的电脑配件",
         sort: 5
     }
 ];
@@ -42,79 +43,37 @@ const categoriesData = [
 const contentsData = [
     {
         title: "CPU性能天梯图解读指南",
-        slug: "cpu-performance-hierarchy",
-        content: `# CPU性能天梯图解读指南
-
-## 什么是CPU天梯图？
-CPU天梯图是一种直观展示处理器性能排名的图表，帮助用户快速了解不同CPU型号之间的性能差异。
-
-## 如何阅读天梯图
-1. 位置越高，性能越强
-2. 同一水平线上的CPU性能相近
-3. 需要结合价格考虑性价比
-
-## 注意事项
-- 天梯图仅供参考，实际性能还需要结合具体使用场景
-- 建议选购时参考实测数据和评测文章
-- 性能差距在15%以内可认为差异不明显`,
-        categoryId: 1,
+        slug: "cpu-performance-chart",
+        content: "# CPU性能天梯图解读指南\n\n本文将帮助你理解如何阅读CPU性能天梯图...",
+        categorySlug: "hardware",
         sort: 1,
-        type: "original",
-        isPublished: true,
-        createdAt: new Date('2024-01-15'),
-        updatedAt: new Date('2024-01-15')
+        type: "original"
     },
     {
         title: "新手装机必读：如何避免常见错误",
-        slug: "pc-building-common-mistakes",
-        content: `# 新手装机必读：如何避免常见错误
-
-## 装机前的准备
-1. 确保工作台清洁干燥
-2. 准备防静电措施
-3. 仔细阅读说明书
-
-## 常见错误
-1. CPU安装方向错误
-2. 内存未完全插入
-3. 电源线接错
-4. 散热硅脂涂抹过多
-
-## 安全注意事项
-- 安装前断开电源
-- 注意主板支撑柱的安装
-- 不要用力过猛
-- 线材整理要规范`,
-        categoryId: 2,
+        slug: "common-mistakes-to-avoid",
+        content: "# 新手装机常见错误\n\n本文总结了新手在装机过程中的常见错误...",
+        categorySlug: "build",
         sort: 1,
-        type: "original",
-        isPublished: true,
-        createdAt: new Date('2024-01-16'),
-        updatedAt: new Date('2024-01-18')
+        type: "original"
     },
     {
         title: "电脑蓝屏问题完全解决方案",
         slug: "blue-screen-solutions",
         content: "蓝屏是Windows系统中最常见的严重错误之一...",
-        categoryId: 3,
+        categorySlug: "troubleshoot",
         sort: 1,
         type: "external",
-        sourceUrl: "https://www.bilibili.com/video/BV1Th411x7gc/",
-        isPublished: true,
-        createdAt: new Date('2024-01-17'),
-        updatedAt: new Date('2024-01-17')
+        sourceUrl: "https://www.bilibili.com/video/BV1Th411x7gc/"
     },
     {
         title: "显卡过热降频？教你如何解决",
         slug: "gpu-thermal-throttling",
         content: "显卡过热降频是很多玩家都会遇到的问题...",
-        categoryId: 4,
+        categorySlug: "optimize",
         sort: 1,
         type: "external",
-        sourceUrl: "https://zhuanlan.zhihu.com/p/597040762",
-        isPublished: true,
-        createdAt: new Date('2024-01-18'),
-        updatedAt: new Date('2024-01-18')
+        sourceUrl: "https://zhuanlan.zhihu.com/p/597040762"
     },
     {
         title: "2024年电脑配置推荐",
@@ -143,36 +102,27 @@ CPU天梯图是一种直观展示处理器性能排名的图表，帮助用户�
 - 内存: 64GB DDR5 7200MHz
 - 硬盘: 2TB NVMe SSD
 - 预算参考：20000元以上`,
-        categoryId: 5,
+        categorySlug: "purchase",
         sort: 1,
-        type: "original",
-        isPublished: true,
-        createdAt: new Date('2024-01-19'),
-        updatedAt: new Date('2024-01-20')
+        type: "original"
     },
     {
         title: "固态硬盘选购和使用指南",
         slug: "ssd-buying-guide",
         content: "如何选择适合自己的固态硬盘？PCIe 4.0值得买吗？",
-        categoryId: 5,
+        categorySlug: "purchase",
         sort: 2,
         type: "external",
-        sourceUrl: "https://www.bilibili.com/video/BV1Wm4y1U7Gq/",
-        isPublished: true,
-        createdAt: new Date('2024-01-19'),
-        updatedAt: new Date('2024-01-19')
+        sourceUrl: "https://www.bilibili.com/video/BV1Wm4y1U7Gq/"
     },
     {
         title: "电脑主板故障诊断与维修",
         slug: "motherboard-repair-guide",
         content: "详细介绍主板常见故障的诊断方法和维修技巧...",
-        categoryId: 3,
+        categorySlug: "troubleshoot",
         sort: 2,
         type: "external",
-        sourceUrl: "https://zhuanlan.zhihu.com/p/658237741",
-        isPublished: true,
-        createdAt: new Date('2024-01-20'),
-        updatedAt: new Date('2024-01-20')
+        sourceUrl: "https://zhuanlan.zhihu.com/p/658237741"
     },
     {
         title: "Windows系统优化指南",
@@ -202,286 +152,130 @@ CPU天梯图是一种直观展示处理器性能排名的图表，帮助用户�
 - 谨慎修改注册表
 - 避免使用第三方优化软件
 - 保持系统定期维护`,
-        categoryId: 4,
+        categorySlug: "optimize",
         sort: 1,
-        type: "original",
-        isPublished: true,
-        createdAt: new Date('2024-01-20'),
-        updatedAt: new Date('2024-01-21')
+        type: "original"
     },
     {
         title: "内存条故障排查全攻略",
         slug: "ram-troubleshooting",
         content: "从内存条插槽清理到兼容性测试，全面解析内存故障...",
-        categoryId: 3,
+        categorySlug: "troubleshoot",
         sort: 3,
         type: "external",
-        sourceUrl: "https://www.bilibili.com/video/BV1Dw411A7Rw/",
-        isPublished: true,
-        createdAt: new Date('2024-01-21'),
-        updatedAt: new Date('2024-01-21')
+        sourceUrl: "https://www.bilibili.com/video/BV1Dw411A7Rw/"
     }
 ];
 
 // 工具数据
 const toolsData = [
     {
-        name: "CPU-Z",
-        description: "专业的CPU检测工具，可以查看处理器的详细信息，包括核心数、线程数、频率、缓存等参数。同时也能查看主板、内存等硬件信息。",
-        category: "硬件检测",
-        downloadUrl: "https://www.cpuid.com/softwares/cpu-z.html",
-        size: "2.5MB",
-        version: "2.08",
-        icon: "/icons/cpu-z.png",
-        downloadCount: 0,
-        createdAt: new Date('2023-12-15'),
-        updatedAt: new Date('2024-01-10')
-    },
-    {
-        name: "GPU-Z",
-        description: "专业的显卡检测工具，可以查看显卡的核心频率、显存频率、显存大小、接口带宽等详细参数，支持实时监控显卡状态。",
-        category: "硬件检测",
-        downloadUrl: "https://www.techpowerup.com/gpuz/",
-        size: "3.2MB",
-        version: "2.54.0",
-        icon: "/icons/gpu-z.png",
-        downloadCount: 0,
-        createdAt: new Date('2023-12-10'),
-        updatedAt: new Date('2024-01-15')
-    },
-    {
         name: "AIDA64",
-        description: "全面的系统信息检测工具，提供硬件检测、性能测试、压力测试等功能，支持生成详细的硬件报告。",
-        category: "硬件检测",
+        description: "全面的系统信息工具，提供详细的硬件检测和压力测试功能",
+        category: "系统检测",
         downloadUrl: "https://www.aida64.com/downloads",
         size: "50MB",
-        version: "7.00",
-        icon: "/icons/aida64.png",
-        downloadCount: 0,
-        createdAt: new Date('2023-11-20'),
-        updatedAt: new Date('2024-01-05')
+        version: "7.0.0"
     },
     {
-        name: "CrystalDiskInfo",
-        description: "硬盘健康状况检测工具，可以查看硬盘的通电时间、温度、健康状态等信息，支持SSD和HDD。",
-        category: "硬件检测",
-        downloadUrl: "https://crystalmark.info/en/software/crystaldiskinfo/",
-        size: "4.8MB",
-        version: "9.1.1",
-        icon: "/icons/crystaldiskinfo.png",
-        downloadCount: 0,
-        createdAt: new Date('2023-12-01'),
-        updatedAt: new Date('2024-01-18')
+        name: "DriverEasy",
+        description: "智能驱动更新工具，自动识别、下载和安装缺失的驱动程序",
+        category: "驱动管理",
+        downloadUrl: "https://www.drivereasy.com/download/",
+        size: "30MB",
+        version: "5.7.0"
     },
     {
-        name: "CrystalDiskMark",
-        description: "专业的硬盘性能测试工具，可以测试硬盘的连续读写、随机读写速度，支持不同的测试模式和数据大小。",
-        category: "性能测试",
-        downloadUrl: "https://crystalmark.info/en/software/crystaldiskmark/",
-        size: "4.5MB",
-        version: "8.0.4",
-        icon: "/icons/crystaldiskmark.png",
-        downloadCount: 0,
-        createdAt: new Date('2023-11-25'),
-        updatedAt: new Date('2024-01-12')
+        name: "CCleaner",
+        description: "系统清理和优化工具，可清理垃圾文件和注册表",
+        category: "系统优化",
+        downloadUrl: "https://www.ccleaner.com/ccleaner/download",
+        size: "25MB",
+        version: "6.0.0"
     },
     {
         name: "OCCT",
-        description: "专业的系统稳定性测试工具，可以进行CPU、内存、显卡的压力测试，帮助检测系统稳定性和散热性能。",
-        category: "性能测试",
-        downloadUrl: "https://www.ocbase.com/",
-        size: "22.3MB",
-        version: "11.1.5",
-        icon: "/icons/occt.png",
-        downloadCount: 0,
-        createdAt: new Date('2023-12-05'),
-        updatedAt: new Date('2024-01-20')
+        description: "专业的硬件稳定性测试工具，支持CPU、GPU和内存测试",
+        category: "硬件测试",
+        downloadUrl: "https://www.ocbase.com/download",
+        size: "40MB",
+        version: "9.1.0"
     },
     {
-        name: "MemTest86",
-        description: "专业的内存测试工具，可以全面检测内存的稳定性和潜在问题，支持DDR4/DDR5内存测试。",
-        category: "性能测试",
-        downloadUrl: "https://www.memtest86.com/",
-        size: "20MB",
-        version: "10.1",
-        icon: "/icons/memtest86.png",
-        downloadCount: 0,
-        createdAt: new Date('2023-11-15'),
-        updatedAt: new Date('2024-01-08')
-    },
-    {
-        name: "DisplayX",
-        description: "显示器测试工具，可以测试显示器的色彩、响应时间、亮度均匀性等参数，帮助检查显示器是否存在问题。",
-        category: "显示检测",
-        downloadUrl: "https://www.displayx.org/",
+        name: "CrystalDiskInfo",
+        description: "硬盘健康状态监测工具，可查看硬盘详细信息和SMART状态",
+        category: "硬盘工具",
+        downloadUrl: "https://crystalmark.info/en/software/crystaldiskinfo/",
         size: "15MB",
-        version: "1.5",
-        icon: "/icons/displayx.png",
-        downloadCount: 0,
-        createdAt: new Date('2024-01-22'),
-        updatedAt: new Date('2024-01-22')
+        version: "8.12.0"
     },
     {
-        name: "DDU",
-        description: "Display Driver Uninstaller，专业的显卡驱动清理工具，可以完全清除显卡驱动程序，解决驱动冲突问题。",
-        category: "系统工具",
-        downloadUrl: "https://www.wagnardsoft.com/",
-        size: "8.5MB",
-        version: "18.0.6.9",
-        icon: "/icons/ddu.png",
-        downloadCount: 0,
-        createdAt: new Date('2024-01-23'),
-        updatedAt: new Date('2024-01-23')
+        name: "Wireshark",
+        description: "专业的网络抓包分析工具，用于网络故障排查和安全分析",
+        category: "网络工具",
+        downloadUrl: "https://www.wireshark.org/download.html",
+        size: "80MB",
+        version: "4.0.0"
     },
     {
-        name: "MSI Afterburner",
-        description: "最受欢迎的显卡超频工具，可以调整显卡核心频率、显存频率、电压、风扇转速，支持硬件监控和游戏内显示。",
-        category: "超频工具",
-        downloadUrl: "https://www.msi.com/Landing/afterburner/",
-        size: "45MB",
-        version: "4.6.5",
-        icon: "/icons/msi-afterburner.png",
-        downloadCount: 0,
-        createdAt: new Date('2023-10-20'),
-        updatedAt: new Date('2024-01-16')
-    },
-    {
-        name: "ASUS GPU Tweak III",
-        description: "华硕官方显卡超频工具，提供一键超频和自定义超频功能，界面美观，操作简单。",
-        category: "超频工具",
-        downloadUrl: "https://www.asus.com/campaign/gpu-tweak-III/",
-        size: "125MB",
-        version: "1.5.8.0",
-        icon: "/icons/gpu-tweak.png",
-        downloadCount: 0,
-        createdAt: new Date('2024-01-25'),
-        updatedAt: new Date('2024-01-25')
-    },
-    {
-        name: "HWiNFO",
-        description: "专业的硬件信息检测工具，提供实时监控和日志记录功能，支持几乎所有的硬件传感器读数。",
-        category: "硬件检测",
-        downloadUrl: "https://www.hwinfo.com/download/",
-        size: "7.2MB",
-        version: "7.66",
-        icon: "/icons/hwinfo.png",
-        downloadCount: 0,
-        createdAt: new Date('2023-11-10'),
-        updatedAt: new Date('2024-01-22')
-    },
-    {
-        name: "Prime95",
-        description: "专业的CPU压力测试工具，可以进行不同强度的CPU稳定性测试，广泛用于超频测试。",
-        category: "性能测试",
-        downloadUrl: "https://www.mersenne.org/download/",
-        size: "5.8MB",
-        version: "30.8",
-        icon: "/icons/prime95.png",
-        downloadCount: 0,
-        createdAt: new Date('2024-01-27'),
-        updatedAt: new Date('2024-01-27')
-    },
-    {
-        name: "FurMark",
-        description: "显卡压力测试工具，通过OpenGL进行极限渲染测试，可以测试显卡的稳定性和温度控制。",
-        category: "性能测试",
-        downloadUrl: "https://geeks3d.com/furmark/",
-        size: "6.4MB",
-        version: "1.33.0",
-        icon: "/icons/furmark.png",
-        downloadCount: 0,
-        createdAt: new Date('2024-01-28'),
-        updatedAt: new Date('2024-01-28')
-    },
-    {
-        name: "Intel XTU",
-        description: "英特尔官方超频工具，支持CPU和内存超频，提供实时监控和性能测试功能。",
-        category: "超频工具",
-        downloadUrl: "https://www.intel.com/content/www/us/en/download/17881/intel-extreme-tuning-utility-intel-xtu.html",
-        size: "85MB",
-        version: "7.12.1",
-        icon: "/icons/intel-xtu.png",
-        downloadCount: 0,
-        createdAt: new Date('2024-01-29'),
-        updatedAt: new Date('2024-01-29')
+        name: "Recuva",
+        description: "数据恢复工具，可恢复误删除的文件和格式化的分区",
+        category: "数据恢复",
+        downloadUrl: "https://www.ccleaner.com/recuva/download",
+        size: "20MB",
+        version: "1.53"
     }
 ];
 
-async function main() {
+// 插入数据
+async function seed() {
     try {
-        // 删除旧数据库文件
-        console.log('删除旧数据库文件...');
-        try {
-            fs.unlinkSync('pc-kb.db');
-            fs.unlinkSync('pc-kb.db-shm');
-            fs.unlinkSync('pc-kb.db-wal');
-        } catch (error) {
-            // 如果文件不存在，忽略错误
+        // 清空所有表
+        console.log("清空所有表...");
+        await db.delete(contents);
+        await db.delete(tools);
+        await db.delete(categories);
+        console.log("表清空完成！");
+
+        // 插入分类数据
+        console.log("开始插入分类数据...");
+        const categoryMap = new Map();
+        for (const category of categoriesData) {
+            const result = await db.insert(categories).values(category).returning();
+            categoryMap.set(category.slug, result[0].id);
         }
-
-        // 创建新的数据库连接
-        console.log('创建数据库连接...');
-        const sqlite = new Database('pc-kb.db');
-        const db = drizzle(sqlite);
-
-        // 运行迁移
-        console.log('运行数据库迁移...');
-        await migrate(db, { migrationsFolder: './drizzle' });
-
-        // 清空所有表（按照外键依赖的顺序）
-        console.log('清空现有数据...');
-        try {
-            await db.delete(contents);
-            await db.delete(categories);
-        } catch (error) {
-            // 如果表不存在，忽略错误
-        }
-
-        // 插入分类数据并获取ID
-        console.log('开始插入分类数据...');
-        const insertedCategories = await Promise.all(
-            categoriesData.map(category => 
-                db.insert(categories)
-                  .values(category)
-                  .returning()
-                  .then(rows => rows[0])
-            )
-        );
-        console.log('分类数据插入完成！');
-
-        // 准备内容数据
-        const contentDataWithCategoryIds = contentsData.map(content => {
-            const category = insertedCategories[content.categoryId - 1];
-            return {
-                ...content,
-                categoryId: category.id
-            };
-        });
+        console.log("分类数据插入完成！");
 
         // 插入内容数据
-        console.log('开始插入内容数据...');
-        await db.insert(contents).values(contentDataWithCategoryIds);
-        console.log('内容数据插入完成！');
+        console.log("开始插入内容数据...");
+        for (const content of contentsData) {
+            const { categorySlug, ...rest } = content;
+            await db.insert(contents).values({
+                ...rest,
+                categoryId: categoryMap.get(categorySlug),
+                isPublished: true
+            });
+        }
+        console.log("内容数据插入完成！");
 
         // 插入工具数据
-        try {
-            console.log('开始插入工具数据...');
-            await db.insert(tools).values(toolsData);
-            console.log('工具数据插入完成！');
-        } catch (error: any) {
-            console.log('工具数据插入失败（可能是表不存在）:', error.message);
+        console.log("开始插入工具数据...");
+        for (const tool of toolsData) {
+            await db.insert(tools).values(tool);
         }
+        console.log("工具数据插入完成！");
 
-        // 关闭数据库连接
-        console.log('关闭数据库连接...');
+        console.log("所有数据初始化完成！");
+    } catch (error) {
+        console.error("数据初始化失败：", error);
+        throw error;
+    } finally {
+        console.log("关闭数据库连接...");
         sqlite.close();
-        
-        console.log('所有数据初始化完成！');
-    } catch (error: any) {
-        console.error('数据初始化失败:', error.message);
-        process.exit(1);
     }
 }
 
-// 执行主函数
-main().catch(console.error); 
+seed().catch((error) => {
+    console.error(error);
+    process.exit(1);
+}); 

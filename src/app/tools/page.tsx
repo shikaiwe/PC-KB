@@ -1,23 +1,8 @@
-import { Download, Shield, Cpu, HardDrive, Monitor, Wrench, Wifi, CircuitBoard, Hammer, Terminal, Bug, Zap } from 'lucide-react';
+import { Download } from 'lucide-react';
 import Link from 'next/link';
 import { db } from '@/db';
 import { tools } from '@/db/schema';
 import { desc } from 'drizzle-orm';
-
-// 图标映射
-const iconMap: { [key: string]: React.ReactNode } = {
-  'shield': <Shield className="w-6 h-6" />,
-  'cpu': <Cpu className="w-6 h-6" />,
-  'hard-drive': <HardDrive className="w-6 h-6" />,
-  'monitor': <Monitor className="w-6 h-6" />,
-  'wrench': <Wrench className="w-6 h-6" />,
-  'wifi': <Wifi className="w-6 h-6" />,
-  'circuit-board': <CircuitBoard className="w-6 h-6" />,
-  'hammer': <Hammer className="w-6 h-6" />,
-  'terminal': <Terminal className="w-6 h-6" />,
-  'bug': <Bug className="w-6 h-6" />,
-  'zap': <Zap className="w-6 h-6" />,
-};
 
 export const revalidate = 3600; // 每小时重新验证一次
 
@@ -52,18 +37,13 @@ export default async function ToolsPage() {
                     key={tool.id}
                     className="bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow p-6"
                   >
-                    <div className="flex items-center space-x-4">
-                      <div className="flex-shrink-0 w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center text-blue-600 dark:text-blue-400">
-                        {iconMap[tool.icon || 'wrench']}
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                          {tool.name}
-                        </h3>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                          下载次数: {tool.downloadCount}
-                        </p>
-                      </div>
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                        {tool.name}
+                      </h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        下载次数: {tool.downloadCount}
+                      </p>
                     </div>
                     <p className="mt-4 text-gray-600 dark:text-gray-300">
                       {tool.description}

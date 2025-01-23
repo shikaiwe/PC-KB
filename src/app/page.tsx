@@ -2,17 +2,18 @@ import { db } from "@/db";
 import { categories, contents, tools } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
 import HomeClient from "./HomeClient";
-import { FileText, Wrench } from "lucide-react";
-import { Category } from "@/types/home";
 import { unstable_cache } from 'next/cache';
+import { Category, Update } from "@/types/home";
 
 // 缓存分类数据
 const getCategoriesData = unstable_cache(
   async () => {
     try {
-      return await db.select().from(categories).orderBy(categories.sort) as Category[];
+      const data = await db.select().from(categories).orderBy(categories.sort) as Category[];
+      console.log('获取分类数据成功:', data.length, '条记录');
+      return data;
     } catch (error) {
-      console.error('Failed to fetch categories:', error);
+      console.error('获取分类数据失败:', error);
       return [];
     }
   },
@@ -24,13 +25,15 @@ const getCategoriesData = unstable_cache(
 const getLatestContents = unstable_cache(
   async () => {
     try {
-      return await db.select()
+      const data = await db.select()
         .from(contents)
         .where(eq(contents.isPublished, true))
         .orderBy(desc(contents.updatedAt))
-        .limit(2);
+        .limit(3);
+      console.log('获取最新内容成功:', data.length, '条记录');
+      return data;
     } catch (error) {
-      console.error('Failed to fetch latest contents:', error);
+      console.error('获取最新内容失败:', error);
       return [];
     }
   },
@@ -42,12 +45,14 @@ const getLatestContents = unstable_cache(
 const getLatestTools = unstable_cache(
   async () => {
     try {
-      return await db.select()
+      const data = await db.select()
         .from(tools)
         .orderBy(desc(tools.updatedAt))
-        .limit(2);
+        .limit(3);
+      console.log('获取最新工具成功:', data.length, '条记录');
+      return data;
     } catch (error) {
-      console.error('Failed to fetch latest tools:', error);
+      console.error('获取最新工具失败:', error);
       return [];
     }
   },
@@ -57,40 +62,45 @@ const getLatestTools = unstable_cache(
 
 export default async function Home() {
   try {
+    console.log('开始获取主页数据...');
+    
     // 并行获取数据
-    const [categoriesData, latestContents, latestTools] = await Promise.all([
+    const [categories, latestContents, latestTools] = await Promise.all([
       getCategoriesData(),
       getLatestContents(),
       getLatestTools()
     ]);
 
+    console.log('数据获取成功:', {
+      categories: categories.length,
+      contents: latestContents.length,
+      tools: latestTools.length
+    });
+
     // 合并并按更新时间排序
-    const latestUpdates = [
+    const latestUpdates: Update[] = [
       ...latestContents.map(content => ({
         type: 'article' as const,
         title: content.title,
         updatedAt: new Date(content.updatedAt),
         slug: content.slug,
-        content: content.content,
-        icon: <FileText className="w-5 h-5" />,
       })),
       ...latestTools.map(tool => ({
         type: 'tool' as const,
         title: tool.name,
         updatedAt: new Date(tool.updatedAt),
         description: tool.description,
-        icon: <Wrench className="w-5 h-5" />,
       }))
-    ].sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
-    .slice(0, 3);
+    ].sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
 
     return (
-      <div className="flex flex-col min-h-screen">
-        <HomeClient categoriesData={categoriesData} latestUpdates={latestUpdates} />
-      </div>
+      <HomeClient
+        categories={categories}
+        latestUpdates={latestUpdates}
+      />
     );
   } catch (error) {
-    console.error('Error in Home page:', error);
-    return <div>加载失败,请刷新页面重试</div>;
+    console.error('获取主页数据失败:', error);
+    return <div>加载失败</div>;
   }
 } 
