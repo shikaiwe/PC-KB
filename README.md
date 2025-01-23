@@ -17,45 +17,40 @@
   - 基于 SQLite FTS5 的全文检索功能
   - 支持中文分词搜索
   - 智能相关性排序
-  - 搜索结果缓存优化
-  - 搜索建议和自动补全
+  - 实时搜索结果展示
   - 搜索历史记录功能
 
 - 📚 **分类知识库**
   - 层级化的内容组织
   - 硬件维修、系统维护等分类
   - 标签系统支持
-  - 相关文章推荐
-  - 文章阅读进度追踪
-  - 文章收藏功能
+  - 面包屑导航
+  - 文章阅读功能
 
 - 🎯 **内容管理**
   - 基于 SQLite + Drizzle ORM
   - 类型安全的数据操作
   - 自动数据验证
-  - 版本控制支持
-  - 文章草稿功能
-  - 定时发布支持
+  - 文章更新日志
 
 - 📱 **现代化界面**
   - 基于 Next.js 14 App Router
   - 响应式设计适配多端
   - 优雅的动画效果
   - 深色模式支持
-  - 自定义主题配置
-  - 键盘快捷操作
+  - 返回顶部功能
+  - 导航栏固定
 
 - ⚡️ **高性能**
   - React Server Components
   - 数据预取和缓存
   - 路由预加载
-  - 增量静态再生成
+  - 静态页面生成
   - 图片自动优化
-  - 智能代码分割
+  - 错误边界处理
 
 - 🎨 **精美设计**
   - Shadcn UI 组件库
-  - Radix UI 无障碍支持
   - Tailwind CSS 原子化样式
   - Lucide Icons 图标库
   - 自适应布局
@@ -91,7 +86,7 @@ cp .env.example .env.local
 4. 初始化数据库
 ```bash
 npx drizzle-kit push:sqlite
-npm run db:seed  # 可选：填充示例数据
+npm run db:seed  # 填充示例数据
 ```
 
 5. 启动开发服务器
@@ -108,17 +103,23 @@ src/
   ├── app/                # Next.js 14 App Router
   │   ├── page.tsx       # 首页
   │   ├── layout.tsx     # 根布局
-  │   └── ...           # 其他页面
+  │   ├── articles/      # 文章页面
+  │   ├── categories/    # 分类页面
+  │   ├── search/        # 搜索页面
+  │   ├── tools/         # 工具页面
+  │   └── updates/       # 更新页面
   ├── components/        # React 组件
   │   ├── home/         # 首页相关组件
   │   ├── ui/           # 通用UI组件
-  │   └── ...          # 其他组件
-  ├── lib/              # 工具函数
-  │   ├── search.ts     # 搜索功能
-  │   └── ...          # 其他工具
+  │   ├── Navbar.tsx    # 导航栏组件
+  │   ├── SearchResults.tsx # 搜索结果组件
+  │   ├── ThemeToggle.tsx  # 主题切换组件
+  │   ├── BackToTop.tsx    # 返回顶部组件
+  │   └── Breadcrumb.tsx   # 面包屑导航组件
   ├── db/               # 数据库相关
   │   ├── index.ts      # 数据库配置
   │   ├── schema.ts     # 数据模型
+  │   ├── migrate.ts    # 数据迁移
   │   └── seed.ts       # 示例数据
   └── types/            # TypeScript 类型定义
 ```
@@ -131,13 +132,10 @@ src/
   - React Server Components - 减少客户端 JavaScript
   - 服务端渲染 (SSR) - 提升首屏加载速度
   - 静态站点生成 (SSG) - 优化静态内容
-  - 增量静态再生成 (ISR) - 定期更新内容
 
 ### UI 框架
 - [Tailwind CSS](https://tailwindcss.com/) - 原子化 CSS
 - [Shadcn/ui](https://ui.shadcn.com/) - 可定制组件库
-- [Radix UI](https://www.radix-ui.com/) - 无障碍组件
-- [Framer Motion](https://www.framer.com/motion/) - 动画库
 - [Lucide Icons](https://lucide.dev/) - 图标库
 
 ### 数据库和搜索
@@ -161,16 +159,10 @@ src/
 - ✅ 工具下载
 - ✅ 最新更新
 - ✅ 深色模式
-- ✅ 文章收藏
-- ✅ 阅读进度
+- ✅ 返回顶部
+- ✅ 导航栏
+- ✅ 面包屑导航
 - ✅ 搜索历史
-- ✅ 快捷键支持
-
-### 开发中功能
-- 🚧 用户评论系统
-- 🚧 文章分享功能
-- 🚧 数据统计面板
-
 
 ## 🤝 贡献指南
 
