@@ -52,6 +52,8 @@
 - 🎨 **精美设计**
   - Shadcn UI 组件库
   - Tailwind CSS 原子化样式
+  - Radix UI 无障碍组件
+  - Framer Motion 动画库
   - Lucide Icons 图标库
   - 自适应布局
   - 主题切换动画
@@ -136,13 +138,26 @@ src/
 ### UI 框架
 - [Tailwind CSS](https://tailwindcss.com/) - 原子化 CSS
 - [Shadcn/ui](https://ui.shadcn.com/) - 可定制组件库
+- [Radix UI](https://www.radix-ui.com/) - 无障碍组件
+- [Framer Motion](https://www.framer.com/motion/) - 动画库
+- [AOS](https://michalsnik.github.io/aos/) - 滚动动画库
 - [Lucide Icons](https://lucide.dev/) - 图标库
+- [Heroicons](https://heroicons.com/) - Tailwind 官方图标
+- [React Icons](https://react-icons.github.io/react-icons/) - 图标集合
+
+### 工具库
+- [class-variance-authority](https://cva.style/) - UI 变体管理
+- [clsx](https://github.com/lukeed/clsx) - 条件类名构建
+- [tailwind-merge](https://github.com/dcastil/tailwind-merge) - Tailwind 类名合并
+- [next-themes](https://github.com/pacocoursey/next-themes) - 主题系统
 
 ### 数据库和搜索
 - [SQLite](https://www.sqlite.org/) - 轻量级数据库
   - FTS5 - 全文搜索引擎
   - JSON1 - JSON 支持
 - [Drizzle ORM](https://orm.drizzle.team/) - TypeScript ORM
+- [libSQL](https://github.com/libsql/libsql) - SQLite 客户端
+- [better-sqlite3](https://github.com/WiseLibs/better-sqlite3) - SQLite3 绑定
 
 ### 开发工具
 - [TypeScript](https://www.typescriptlang.org/) - 类型检查
