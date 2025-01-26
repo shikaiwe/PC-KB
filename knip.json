@@ -1,0 +1,24 @@
+{
+  "$schema": "https://unpkg.com/knip@latest/schema.json",
+  "entry": [
+    "src/app/**/*.{ts,tsx}",
+    "src/components/**/*.{ts,tsx}",
+    "src/db/**/*.{ts,tsx}",
+    "src/types/**/*.{ts,tsx}"
+  ],
+  "project": ["src/**/*.{ts,tsx}"],
+  "ignoreDependencies": ["@types/*"],
+  "ignore": [
+    "**/*.d.ts",
+    "**/db/schema.ts"
+  ],
+  "rules": {
+    "classMembers": "error",
+    "duplicates": "error",
+    "exports": "error",
+    "files": "error",
+    "types": "error",
+    "dependencies": "error",
+    "devDependencies": "error"
+  }
+} 

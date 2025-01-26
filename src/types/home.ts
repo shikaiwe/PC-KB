@@ -29,23 +29,9 @@ export type ArticleUpdate = {
   slug: string;
 };
 
-export type ToolUpdate = {
-  type: 'tool';
-  title: string;
-  updatedAt: Date;
-  description: string;
-};
-
-export type Update = ArticleUpdate | ToolUpdate;
+export type Update = ArticleUpdate;
 
 export interface HomeProps {
   categories: Category[];
   latestUpdates: Update[];
-}
-
-export type Content = {
-  title: string;
-  updatedAt: string;
-  slug: string;
-  content: string;
-}; 
+} 
